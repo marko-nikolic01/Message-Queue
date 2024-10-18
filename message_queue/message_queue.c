@@ -42,4 +42,14 @@ Message* dequeue(MessageQueue *queue) {
     return msg;
 }
 
+void acknowledge(MessageQueue *queue) {
+    pthread_mutex_lock(&queue->mutex);
+    if (queue->count > 0) {
+        freeMessage(queue->messages[queue->front % MAX_QUEUE_SIZE]);
+        queue->front++;
+        queue->count--;
+    }
+    pthread_mutex_unlock(&queue->mutex);
+}
+
 
