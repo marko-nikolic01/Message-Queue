@@ -11,7 +11,7 @@ typedef struct MessageQueueSystem {
     pthread_mutex_t mutex;
 } MessageQueueSystem;
 
-void initMQSystem(MessageQueueSystem *mq);
+void initMessageQueueSystem(MessageQueueSystem *mq);
 int findChannel(MessageQueueSystem *mq, const char *channel_name);
 void startServer(MessageQueueSystem *mq, int port);
 
