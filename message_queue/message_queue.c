@@ -67,3 +67,32 @@ void listMessages(MessageQueue *queue) {
     }
     pthread_mutex_unlock(&queue->mutex);
 }
+
+int deleteMessage(MessageQueue *queue, int id) {
+    pthread_mutex_lock(&queue->mutex);
+    for (int i = 0; i < queue->count; i++) {
+        int index = (queue->front + i) % MAX_QUEUE_SIZE;
+        if (queue->messages[index]->id == id) {
+            freeMessage(queue->messages[index]);
+            for (int j = i; j < queue->count - 1; j++) {
+                queue->messages[(queue->front + j) % MAX_QUEUE_SIZE] =
+                    queue->messages[(queue->front + j + 1) % MAX_QUEUE_SIZE];
+            }
+            queue->rear--;
+            queue->count--;
+            pthread_mutex_unlock(&queue->mutex);
+            return 0;
+        }
+    }
+    pthread_mutex_unlock(&queue->mutex);
+    return -1;
+}
+
+void freeQueue(MessageQueue *queue) {
+    while (queue->count > 0) {
+        Message *msg = dequeue(queue);
+        freeMessage(msg);
+    }
+    free(queue->messages);
+    pthread_mutex_destroy(&queue->mutex);
+}
