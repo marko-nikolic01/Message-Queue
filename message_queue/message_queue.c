@@ -52,4 +52,18 @@ void acknowledge(MessageQueue *queue) {
     pthread_mutex_unlock(&queue->mutex);
 }
 
+int count(MessageQueue *queue) {
+    pthread_mutex_lock(&queue->mutex);
+    int c = queue->count;
+    pthread_mutex_unlock(&queue->mutex);
+    return c;
+}
 
+void listMessages(MessageQueue *queue) {
+    pthread_mutex_lock(&queue->mutex);
+    for (int i = 0; i < queue->count; i++) {
+        Message *msg = queue->messages[(queue->front + i) % MAX_QUEUE_SIZE];
+        printf("Message ID: %d, Content: %s\n", msg->id, msg->content);
+    }
+    pthread_mutex_unlock(&queue->mutex);
+}
