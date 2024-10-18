@@ -80,7 +80,7 @@ void handleClient(void *arg) {
 
         if (strcmp(command, "ENQUEUE") == 0) {
             printf("Processing ENQUEUE for channel: %s\n", channel_name);
-            if (enqueue(&channel->queue, message_content) == 0) {
+            if (enqueue(&channel->channelQueue, message_content) == 0) {
                 send(client_socket, "Message enqueued\n", 18, 0);
                 printf("Message enqueued successfully: %s\n", message_content);
             } else {
@@ -89,30 +89,30 @@ void handleClient(void *arg) {
             }
         } else if (strcmp(command, "DEQUEUE") == 0) {
             printf("Processing DEQUEUE for channel: %s\n", channel_name);
-            Message *msg = dequeue(&channel->queue);
+            Message *msg = dequeue(&channel->channelQueue);
+
             if (msg) {
                 send(client_socket, msg->content, strlen(msg->content), 0);
-                acknowledge(&channel->queue);
-                freeMessage(msg);
                 printf("Message dequeued and sent: %s\n", msg->content);
             } else {
                 send(client_socket, "Queue is empty\n", 16, 0);
                 printf("Failed to dequeue message: Queue is empty\n");
             }
+            fflush(stdout);
         } else if (strcmp(command, "COUNT") == 0) {
-            int count = countMessages(&channel->queue);
+            int count = countMessages(&channel->channelQueue);
             snprintf(buffer, sizeof(buffer), "Count: %d\n", count);
             send(client_socket, buffer, strlen(buffer), 0);
             printf("Count requested: %d\n", count);
         } else if (strcmp(command, "LIST") == 0) {
-            pthread_mutex_lock(&channel->queue.mutex);
+            pthread_mutex_lock(&channel->channelQueue.queueMutex);
             printf("Processing LIST for channel: %s\n", channel_name);
-            for (int i = 0; i < channel->queue.count; i++) {
-                Message *msg = channel->queue.messages[(channel->queue.front + i) % MAX_QUEUE_SIZE];
+            for (int i = 0; i < channel->channelQueue.count; i++) {
+                Message *msg = channel->channelQueue.messages[(channel->channelQueue.front + i) % MAX_QUEUE_SIZE];
                 snprintf(buffer, sizeof(buffer), "Message ID: %d, Content: %s\n", msg->id, msg->content);
                 send(client_socket, buffer, strlen(buffer), 0);
             }
-            pthread_mutex_unlock(&channel->queue.mutex);
+            pthread_mutex_unlock(&channel->channelQueue.queueMutex);
             printf("Completed listing messages for channel: %s\n", channel_name);
         }
     }

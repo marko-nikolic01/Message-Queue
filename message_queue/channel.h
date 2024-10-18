@@ -4,7 +4,7 @@
 #include "message_queue.h"
 
 typedef struct Channel {
-    MessageQueue queue;
+    MessageQueue channelQueue;
     char name[50];
 } Channel;
 

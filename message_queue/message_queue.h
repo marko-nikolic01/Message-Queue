@@ -9,7 +9,7 @@ typedef struct MessageQueue {
     int front;
     int rear;
     int count;
-    pthread_mutex_t mutex;
+    pthread_mutex_t queueMutex;
 } MessageQueue;
 
 void initQueue(MessageQueue *queue);
