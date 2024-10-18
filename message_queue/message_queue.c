@@ -10,6 +10,7 @@ void initQueue(MessageQueue *queue) {
     queue->front = 0;
     queue->rear = 0;
     queue->count = 0;
+    queue->nextId = 0;
     pthread_mutex_init(&queue->queueMutex, NULL);
 }
 
@@ -20,10 +21,11 @@ int enqueue(MessageQueue *queue, const char *message_content) {
         return -1;
     }
 
-    Message *msg = createMessage(message_content, queue->rear);
+    Message *msg = createMessage(message_content, queue->nextId);
     queue->messages[queue->rear % MAX_QUEUE_SIZE] = msg;
     queue->rear++;
     queue->count++;
+    queue->nextId++;
 
     pthread_mutex_unlock(&queue->queueMutex);
     return 0;
@@ -40,6 +42,19 @@ Message* dequeue(MessageQueue *queue) {
 
     queue->front = (queue->front + 1) % MAX_QUEUE_SIZE;
     queue->count--;
+
+    pthread_mutex_unlock(&queue->queueMutex);
+    return msg;
+}
+
+Message* peek(MessageQueue *queue) {
+    pthread_mutex_lock(&queue->queueMutex);
+    if (queue->count == 0) {
+        pthread_mutex_unlock(&queue->queueMutex);
+        return NULL;
+    }
+
+    Message *msg = queue->messages[queue->front % MAX_QUEUE_SIZE];
 
     pthread_mutex_unlock(&queue->queueMutex);
     return msg;

@@ -40,6 +40,7 @@ void handleClient(void *arg) {
     while ((n = recv(client_socket, buffer, sizeof(buffer) - 1, 0)) > 0) {
         buffer[n] = '\0';
         char command[20], channel_name[50], message_content[256];
+        int message_id;
         int parsed = sscanf(buffer, "%[^:]:%[^:]:%[^\n]", command, channel_name, message_content);
 
         printf("Raw command received: %s\n", buffer);
@@ -99,11 +100,35 @@ void handleClient(void *arg) {
                 printf("Failed to dequeue message: Queue is empty\n");
             }
             fflush(stdout);
+        } else if (strcmp(command, "PEEK") == 0) {
+            printf("Processing PEEK for channel: %s\n", channel_name);
+            Message *msg = peek(&channel->channelQueue);
+
+            if (msg) {
+                send(client_socket, msg->content, strlen(msg->content), 0);
+                printf("Message peeked and sent: %s\n", msg->content);
+            } else {
+                send(client_socket, "Queue is empty\n", 16, 0);
+                printf("Failed to peek message: Queue is empty\n");
+            }
+            fflush(stdout);
+        } else if (strcmp(command, "ACKNOWLEDGE") == 0) {
+            printf("Processing ACKNOWLEDGE for channel: %s\n", channel_name);
+
+            if (peek(&channel->channelQueue)) {
+                acknowledge(&channel->channelQueue);
+                send(client_socket, "Message acknowledged\n", 22, 0);
+                printf("Message acknowledged\n");
+            } else {
+                send(client_socket, "Queue is empty\n", 16, 0);
+                printf("Failed to acknowledge message: Queue is empty\n");
+            }
+            fflush(stdout);
         } else if (strcmp(command, "COUNT") == 0) {
+            printf("Processing COUNT for channel: %s\n", channel_name);
             int count = countMessages(&channel->channelQueue);
             snprintf(buffer, sizeof(buffer), "Count: %d\n", count);
             send(client_socket, buffer, strlen(buffer), 0);
-            printf("Count requested: %d\n", count);
         } else if (strcmp(command, "LIST") == 0) {
             pthread_mutex_lock(&channel->channelQueue.queueMutex);
             printf("Processing LIST for channel: %s\n", channel_name);
@@ -114,6 +139,20 @@ void handleClient(void *arg) {
             }
             pthread_mutex_unlock(&channel->channelQueue.queueMutex);
             printf("Completed listing messages for channel: %s\n", channel_name);
+        } else if (strcmp(command, "DELETE") == 0) {
+            if (sscanf(message_content, "%d", &message_id) != 1) {
+                send(client_socket, "Invalid message ID format\n", 27, 0);
+            } else {
+                printf("Processing DELETE for message ID: %d\n", message_id);
+                if (deleteMessage(&channel->channelQueue, message_id) == 0) {
+                    send(client_socket, "Message deleted\n", 16, 0);
+                    printf("Message with ID %d deleted successfully\n", message_id);
+                } else {
+                    send(client_socket, "Message ID not found\n", 21, 0);
+                    printf("Failed to delete message: ID %d not found\n", message_id);
+                }
+            }
+            fflush(stdout);
         }
     }
     close(client_socket);

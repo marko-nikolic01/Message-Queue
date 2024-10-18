@@ -20,6 +20,8 @@ fi
 # Prepare the command string
 if [ "$COMMAND" == "ENQUEUE" ]; then
     CMD="$COMMAND:$CHANNEL_NAME:$MESSAGE_CONTENT"
+elif [ "$COMMAND" == "DELETE" ]; then
+    CMD="$COMMAND:$CHANNEL_NAME:$MESSAGE_CONTENT"
 else
     CMD="$COMMAND:$CHANNEL_NAME:"
 fi

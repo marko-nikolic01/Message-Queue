@@ -13,11 +13,11 @@
 1729267506 /home/marko/Documents/GitHub/Message-Queue/message_queue/channel.h
 	"message_queue.h"
 
-1729267671 /home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue.h
+1729277224 /home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue.h
 	"message.h"
 	<pthread.h>
 
-1729269148 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue.c
+1729277322 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue.c
 	"message_queue.h"
 	<stdio.h>
 	<stdlib.h>
@@ -30,7 +30,7 @@
 1729266856 /home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue_system.h
 	"channel.h"
 
-1729268779 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue_system.c
+1729275758 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue_system.c
 	"message_queue_system.h"
 	<stdio.h>
 	<stdlib.h>
