@@ -27,4 +27,19 @@ int enqueue(MessageQueue *queue, const char *message_content) {
     return 0;
 }
 
+Message* dequeue(MessageQueue *queue) {
+    pthread_mutex_lock(&queue->mutex);
+    if (queue->count == 0) {
+        pthread_mutex_unlock(&queue->mutex);
+        return NULL;
+    }
+
+    Message *msg = queue->messages[queue->front % MAX_QUEUE_SIZE];
+    queue->front++;
+    queue->count--;
+
+    pthread_mutex_unlock(&queue->mutex);
+    return msg;
+}
+
 
