@@ -11,3 +11,20 @@ void initQueue(MessageQueue *queue) {
     pthread_mutex_init(&queue->mutex, NULL);
 }
 
+int enqueue(MessageQueue *queue, const char *message_content) {
+    pthread_mutex_lock(&queue->mutex);
+    if (queue->count == MAX_QUEUE_SIZE) {
+        pthread_mutex_unlock(&queue->mutex);
+        return -1;
+    }
+
+    Message *msg = createMessage(message_content, queue->rear);
+    queue->messages[queue->rear % MAX_QUEUE_SIZE] = msg;
+    queue->rear++;
+    queue->count++;
+
+    pthread_mutex_unlock(&queue->mutex);
+    return 0;
+}
+
+
