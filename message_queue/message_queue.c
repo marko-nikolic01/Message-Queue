@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+#define MAX_QUEUE_SIZE 100
+
 void initQueue(MessageQueue *queue) {
     queue->messages = (Message **)malloc(sizeof(Message *) * MAX_QUEUE_SIZE);
     queue->front = 0;
@@ -52,7 +54,7 @@ void acknowledge(MessageQueue *queue) {
     pthread_mutex_unlock(&queue->mutex);
 }
 
-int count(MessageQueue *queue) {
+int countMessages(MessageQueue *queue) {
     pthread_mutex_lock(&queue->mutex);
     int c = queue->count;
     pthread_mutex_unlock(&queue->mutex);

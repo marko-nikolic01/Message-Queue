@@ -10,4 +10,4 @@ typedef struct Channel {
 
 void initChannel(Channel *channel, const char *name);
 
-#endif
+#endif // CHANNEL_H

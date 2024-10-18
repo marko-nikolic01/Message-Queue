@@ -1,0 +1,40 @@
+# depslib dependency file v1.0
+1729257511 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/message.c
+	"message.h"
+	<stdlib.h>
+	<string.h>
+
+1729259198 /home/marko/Documents/GitHub/Message-Queue/message_queue/message.h
+
+1729258206 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/channel.c
+	"channel.h"
+	<string.h>
+
+1729259188 /home/marko/Documents/GitHub/Message-Queue/message_queue/channel.h
+	"message_queue.h"
+
+1729259833 /home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue.h
+	"message.h"
+	<pthread.h>
+
+1729259838 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue.c
+	"message_queue.h"
+	<stdio.h>
+	<stdlib.h>
+	<pthread.h>
+
+1729265941 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/main.c
+	"message_queue_system.h"
+	<stdio.h>
+
+1729266856 /home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue_system.h
+	"channel.h"
+
+1729267030 source:/home/marko/Documents/GitHub/Message-Queue/message_queue/message_queue_system.c
+	"message_queue_system.h"
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<unistd.h>
+	<arpa/inet.h>
+

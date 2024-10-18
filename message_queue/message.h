@@ -9,4 +9,4 @@ typedef struct Message {
 Message* createMessage(const char *content, int id);
 void freeMessage(Message *msg);
 
-#endif
+#endif // MESSAGE_H

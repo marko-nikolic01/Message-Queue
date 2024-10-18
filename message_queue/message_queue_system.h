@@ -8,12 +8,12 @@
 typedef struct MessageQueueSystem {
     Channel channels[MAX_CHANNELS];
     int channel_count;
-    pthread_mutex_t mutex;
+    pthread_mutex_t queueMutex;
 } MessageQueueSystem;
 
 void initMessageQueueSystem(MessageQueueSystem *mq);
 int findChannel(MessageQueueSystem *mq, const char *channel_name);
 void startServer(MessageQueueSystem *mq, int port);
-void handleClient(int client_socket, MessageQueueSystem *mq)
+void handleClient(void *arg);
 
-#endif
+#endif // MESSAGE_QUEUE_SYSTEM_H
