@@ -14,5 +14,6 @@ typedef struct MessageQueueSystem {
 void initMessageQueueSystem(MessageQueueSystem *mq);
 int findChannel(MessageQueueSystem *mq, const char *channel_name);
 void startServer(MessageQueueSystem *mq, int port);
+void handleClient(int client_socket, MessageQueueSystem *mq)
 
 #endif
